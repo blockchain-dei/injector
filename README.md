@@ -11,3 +11,4 @@ solc --ast-compact-json Abs5.sol > Abs5-ast.json
 
 # inject a vulnerability into a smart contract:
 python3 vul-1-3-1.py 3-1a_Fixed.sol
+

@@ -199,51 +199,6 @@ def getContractSolVersion(contract):
     return
 
 
-def tri_recursionali(data, dataOut):
-    # Load the compact AST JSON
-    dataOut['attributes'] = {}
-    dataOut['children'] = []
-    #print(f"tri_recursionali:dataout0 {dataOut}")
-    for attr in data:
-        #print(f"1: {attr}")
-        if attr == "id":
-            dataOut["id"] = data["id"]
-        elif attr == "nodeType":
-            dataOut["name"] = data["nodeType"]
-        elif attr == "src":
-            dataOut["src"] = data["src"]
-        elif attr == "exportedSymbols":
-            dataOut['attributes'][attr] = data[attr]
-        elif isinstance(data[attr], list):
-            #print(f"2:list {attr}")
-            if not data[attr]:
-                #print("2.3:list is empty")
-                dataOut['attributes'][attr] = ['null']
-            elif all(isinstance(item, dict) for item in data[attr]):
-                #print("2.5:list item")
-                #dataOut['children']=[]
-                for item in data[attr]:
-                    #print("3:list item")
-                    if "nodeType" in item:
-                        # dataOut['children']=[]
-                        d = {}
-                        tri_recursionali(item, d)
-                        dataOut['children'].append(d)
-                    #print(f"3.5:d {d}")
-            else:
-                dataOut['attributes'][attr] = data[attr]
-        elif isinstance(data[attr], dict):
-            if "nodeType" in data[attr]:
-                e = {}
-                tri_recursionali(data[attr], e)
-                dataOut['children'].append(e)
-        else:
-            #print("else")
-            dataOut['attributes'][attr] = data[attr]
-    #print(f"tri_recursionali:dataout1 {dataOut}")
-    return dataOut
-
-
 def remove_empty_nodes(full_ast):
     #print(f"remove_empty_nodes:full_ast0 {full_ast}")
     keys_to_delete = []

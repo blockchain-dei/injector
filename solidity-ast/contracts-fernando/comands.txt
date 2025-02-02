@@ -1,0 +1,96 @@
+../inject.sh ./ast/A_WVAE.py NoUnderflow.sol
+
+../inject.sh ./ast/F_001.py NoFunctionTypes.sol
+python3 -m debugpy --connect localhost:5678 ./serializer.py Relayer.sol Sai.out
+
+python3  ./serializer.py Relayer.sol Sai.out
+
+
+../inject.sh ./ast/F_002.py Relayer.sol
+
+../inject.sh ./ast/CH_MRTS.py NoPublicToExternal.sol
+
+../inject.sh ./ast/CH_MRIV.py RequireOld.sol
+
+../inject.sh ./ast/AL_MITSS.py AssetTransfer.sol
+
+../inject.sh ./ast/AL_MIIVS.py AssetTransfer.sol
+  
+
+../inject.sh ./ast/AL_WRAR.py RequireSub.sol
+
+../inject.sh ./ast/AL_ECSWS.py infiniteLoop.sol
+ 
+../inject.sh ./ast/CH_MROTS.py NoPublicToExternal.sol
+
+../inject.sh ./ast/CH_MROIV.py NoPublicToExternal.sol
+
+../inject.sh ./ast/CH_MRATS.py NoPublicToExternal.sol
+
+../inject.sh ./ast/CH_MRAIV.py NoPublicToExternal.sol
+
+
+scp -r * admin@10.3.1.43:/home/admin/inject
+
+
+Importante rodar o comando abaixo antes de executar o RUN.sh
+export NODE_OPTIONS=--max-old-space-size=8192
+
+
+Importante limpar os dockers antes de rodar
+sudo docker stop $(sudo docker ps -aq)
+sudo docker rm $(sudo docker ps -aq)
+
+nohup ./run.sh &
+
+
+//[npm install @nx-plus/vue --save
+
+cd  /Users/fernandovidal/Documents/Phd\ Coimbra/PublicacoesTrabalhar/SmartContract/securify2/securify/staticanalysis/libfunctors/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:`pwd`
+
+
+cd  /Users/fernandovidal/Documents/Phd\ Coimbra/PublicacoesTrabalhar/SmartContract/smartcontract-faultinjector/solidity-ast/examples
+
+cd /home/admin/securify2/securify/staticanalysis/libfunctors
+
+python3 automatize_tools.py "securify" /Users/fernandovidal/all_bugs/
+
+virtualenv --python=/Library/Frameworks/Python.framework/Versions/3.7/bin/python3.7 venv
+
+
+python3 automatize_tools.py "slither" single/
+
+$ nohup python3 automatize_tools.py "myth analyze" all_bugs/
+
+antes de rodar securify precisa rodar o path.
+
+cd /home/admin/securify2/securify/staticanalysis/libfunctors
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:`pwd`
+
+AssetTransfer-0-0.sol
+
+export PATH=$PATH:/home/admin/securify2/venv/bin  
+nohup python3 automatize_tools.py "securify" all_bugs/ &
+
+
+Para rodar Securify , entrar nesse directorio.
+source venv/bin/activate
+
+
+/home/admin/contrats_to_test/securify
+python3 automatize_tools.py "securify" all_bugs/ 
+
+--execution-timeout 120 &
+
+python3 merge.py Juntar/outputs/
+
+cat 1.txt | xargs rm -f | bash
+
+
+====== RowanCoin-35-3.sol (326/4594)======
+(node:91404) UnhandledPromiseRejectionWarning: /home/admin/smartcontract-faultinjection/tests/workloads/RowanCoin.js:120
+		{type: 't', invoker: c[1], function: 'addMessage', args: [a[3], "
+
+
+		rsync -rvcm --compare-dest=/home/admin/contrats_to_test/all_bugs/ /home/admin/contrats_to_test/securify/all_bugs/ comp/

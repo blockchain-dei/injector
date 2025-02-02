@@ -1,0 +1,11 @@
+{
+  "name": "bectoken-test",
+  "version": "1.0.0",
+  "description": "Testing BecToken with different faults",
+  "author": "Attila Klenik",
+  "license": "ISC",
+  "dependencies": {
+    "csvtojson": "^2.0.8",
+    "js-yaml": "^3.13.0"
+  }
+}

@@ -1,0 +1,1 @@
+[{"constant":false,"inputs":[{"internalType":"bytes","name":"_payload","type":"bytes"},{"internalType":"address","name":"owner","type":"address"}],"name":"forward","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]

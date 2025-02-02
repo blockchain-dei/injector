@@ -1,0 +1,350 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta content="text/css" http-equiv="Content-Style-Type">
+<title>Variables</title>
+</head>
+<body>
+<h1 align="center" class="root">
+<a name="779frrh98qhh0umbpcchd96ihr">Variables</a>
+</h1>
+<h2 class="topic">
+<a name="31nna5s8ighonauago8m35b6bp">Observed</a>
+</h2>
+<h3 class="topic">
+<a name="2nb9j7basqauiresthf51mhvav">&nbsp;Common</a>
+</h3>
+<h3 class="topic">
+<a name="3m8on0bseu2igvjdh6brr0sc4r">&nbsp;&nbsp;tx_id</a>
+</h3>
+<h3 class="topic">
+<a name="00iqdopdd5bhq55apjo0j89n09">&nbsp;&nbsp;&nbsp;the unique ID of the transaction</a>
+</h3>
+<h3 class="topic">
+<a name="7tr4ej3g8nn10rp54896ttr6ba">&nbsp;&nbsp;request_type</a>
+</h3>
+<h3 class="topic">
+<a name="1ka1cdhitumf42e2jvnra430v2">&nbsp;&nbsp;&nbsp;"transaction" or "query"</a>
+</h3>
+<h3 class="topic">
+<a name="56cb28meemkk0v7sjn5cf9g515">&nbsp;Timestamps</a>
+</h3>
+<h3 class="topic">
+<a name="2e0d4ajcr2k92bi8i7h5tsm6n2">&nbsp;&nbsp;time_create</a>
+</h3>
+<h3 class="topic">
+<a name="50831ofolfh1og2s8k6pbflvtu">&nbsp;&nbsp;&nbsp;the Unix epoch when the transaction was initiated</a>
+</h3>
+<h3 class="topic">
+<a name="32270k2i4p9qdoak2enhpbbksd">&nbsp;&nbsp;time_endorse</a>
+</h3>
+<h3 class="topic">
+<a name="257q0pc3tnrsofmvfocnlpb9n6">&nbsp;&nbsp;&nbsp;the Unix epoch when Caliper received the proposal responses from the endorsers</a>
+</h3>
+<h3 class="topic">
+<a name="2drv1kemsgtq8ng658lkni6eei">&nbsp;&nbsp;time_orderer_ack</a>
+</h3>
+<h3 class="topic">
+<a name="4fkesibrclaefkpnjrev98oc3l">&nbsp;&nbsp;&nbsp;the Unix epoch when Caliper received the confirmation from the orderer that it successfully received the transaction</a>
+</h3>
+<h3 class="topic">
+<a name="2qpld7ssimfsval6lspgogdra1">&nbsp;&nbsp;time_final</a>
+</h3>
+<h3 class="topic">
+<a name="6460auun0kkt6k0n6hu5a1elua">&nbsp;&nbsp;&nbsp;the Unix epoch when the adapter received a successful commit event from 100% of the peers</a>
+</h3>
+<h3 class="topic">
+<a name="5f5gcr2jnuc6ne4pc4ce0udud7">&nbsp;&nbsp;commit_success_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="40l3qpt1atnr5867j0fr65cqp9">&nbsp;&nbsp;&nbsp;the Unix epoch when the adapter received a successful commit event from {peer}</a>
+</h3>
+<h3 class="topic">
+<a name="2s3slo8o6uogt641p0mcps0rnu">&nbsp;Durations</a>
+</h3>
+<h3 class="topic">
+<a name="3tlfjtl9ccqqfde0nl9sl109vm">&nbsp;&nbsp;duration_ns_evm_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="5asebj5be5jqeior47s3l9seen">&nbsp;&nbsp;&nbsp;The time it took in ns to execute the EVM bytecode on {peer}</a>
+</h3>
+<h3 class="topic">
+<a name="36608ar85hhl8mhad6o7ba6ihf">&nbsp;&nbsp;duration_ns_cc_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="7a2hn971hs29cjbrlpcpgch9qj">&nbsp;&nbsp;&nbsp;The time it took in ns to execute the EVMCC proxy chaincode on {peer}</a>
+</h3>
+<h3 class="topic">
+<a name="0sof9u3v208ks9qaqr6lth9s5c">&nbsp;Results</a>
+</h3>
+<h3 class="topic">
+<a name="6sksbb07vuo2fk9atdkg7slq0m">&nbsp;&nbsp;status</a>
+</h3>
+<h3 class="topic">
+<a name="4prlu8auvh4eo9vnt0ts3te51i">&nbsp;&nbsp;&nbsp;"failed" or "success"</a>
+</h3>
+<h3 class="topic">
+<a name="1a2u03te8mn1lc5bb3q0pu8304">&nbsp;&nbsp;return_value</a>
+</h3>
+<h3 class="topic">
+<a name="1ef3tbsq6j3dm3oe4ej46erb84">&nbsp;&nbsp;&nbsp;the return value of the transaction/query</a>
+</h3>
+<h3 class="topic">
+<a name="02i2pod49qbng7h41r4hhfdgc5">&nbsp;&nbsp;endorsement_result_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="6u0t2i7me7r7g8jk5hvr0r84i5">&nbsp;&nbsp;&nbsp;the chaincode invocation result returned by {peer}</a>
+</h3>
+<h3 class="topic">
+<a name="25f0ou363t87tqemcqesdo0ah2">&nbsp;&nbsp;reads</a>
+</h3>
+<h3 class="topic">
+<a name="7qfj9ab4bkd8odoaddmscipgf9">&nbsp;&nbsp;&nbsp;the sorted read entries in the read set in their canonical form:&#13;
+&lt;namespace&gt;&lt;key&gt;@&lt;block index&gt;.&lt;TX index&gt;</a>
+</h3>
+<h3 class="topic">
+<a name="6gt0ohm1ke32kce0e0prnp5es9">&nbsp;&nbsp;writes</a>
+</h3>
+<h3 class="topic">
+<a name="4qrrkqc372m958rdtngvss866h">&nbsp;&nbsp;&nbsp;the sorted write entries in the write set in their canonical form:&#13;
+&lt;namespace&gt;&lt;key&gt;@&lt;hex-encoded value or null for delete&gt;</a>
+</h3>
+<h3 class="topic">
+<a name="7um8sbqb6f4j8tr3b1tgihkugk">&nbsp;Error</a>
+</h3>
+<h3 class="topic">
+<a name="3dqor226bdu2rk3nlrh2olbflk">&nbsp;&nbsp;proposal_error</a>
+</h3>
+<h3 class="topic">
+<a name="65275tmnnu6o8hnkh85ct1o9ve">&nbsp;&nbsp;&nbsp;the error message in case an error occurred during sending/waiting for the proposal responses from the endorsers</a>
+</h3>
+<h3 class="topic">
+<a name="0cegmnrq447419chm0ukuh0rvh">&nbsp;&nbsp;proposal_response_error_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="75rat25tgfqunas43tqf85e0cd">&nbsp;&nbsp;&nbsp;The error message in case {peer} returned an error as endorsement result</a>
+</h3>
+<h3 class="topic">
+<a name="29uk6jpdkqi0pg888qrnilbglc">&nbsp;&nbsp;endorsement_verify_error_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="3n7mcgoc5hj4nv143tq3837l66">&nbsp;&nbsp;&nbsp;"INVALID" if the signature and identity of {peer} couldn&rsquo;t be verified</a>
+</h3>
+<h3 class="topic">
+<a name="193q9coovvadodpr0u8g3fumo2">&nbsp;&nbsp;endorsement_result_error_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="07mt6apb9eqa2cujunr0jlul1a">&nbsp;&nbsp;&nbsp;the error message if the transaction proposal or query execution at {peer} results in an error</a>
+</h3>
+<h3 class="topic">
+<a name="30uglcmrtls2h4g92v9guihhp3">&nbsp;&nbsp;read_write_set_error</a>
+</h3>
+<h3 class="topic">
+<a name="0ntos1ds3sr46kr7l61p34r5v4">&nbsp;&nbsp;&nbsp;"MISMATCH" if the sent transaction proposals resulted in different read/write sets</a>
+</h3>
+<h3 class="topic">
+<a name="6ro6ttb0k1e7qc4gjj97nvd66i">&nbsp;&nbsp;broadcast_error_{orderer}</a>
+</h3>
+<h3 class="topic">
+<a name="4qbibs7omgvmtvs3ru4mhc4j8a">&nbsp;&nbsp;&nbsp;the warning message in case Caliper did not receive a successful confirmation from {orderer}</a>
+</h3>
+<h3 class="topic">
+<a name="1nsv1djp4ajv7pm6vjav16qtst">&nbsp;&nbsp;broadcast_response_error_{orderer}</a>
+</h3>
+<h3 class="topic">
+<a name="3pp959eju8jg78refchsqn24pk">&nbsp;&nbsp;&nbsp;the error message in case the adapter received an explicit unsuccessful response from {orderer}</a>
+</h3>
+<h3 class="topic">
+<a name="27frd6s1cc4r4nb04he8h52thi">&nbsp;&nbsp;unexpected_error</a>
+</h3>
+<h3 class="topic">
+<a name="0ij2rgkpp258m3ffot8vtq8p9l">&nbsp;&nbsp;&nbsp;the error message in case some unexpected error occurred during the life-cycle of a transaction</a>
+</h3>
+<h3 class="topic">
+<a name="4hpit65tsiprusidsmsuuhmv1l">&nbsp;&nbsp;commit_timeout_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="5kr1l90fg84lpkscrbn1r004qm">&nbsp;&nbsp;&nbsp;has the value of "TIMEOUT" in case the event notification about the transaction did not arrive in time from {peer}</a>
+</h3>
+<h3 class="topic">
+<a name="6hgkk5frqhjmn64gpgbo3g78bd">&nbsp;&nbsp;commit_error_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="147md6iiv57lubeh7u8klkidmu">&nbsp;&nbsp;&nbsp;contains the error code in case the transaction validation fails at the end of its life-cycle on {peer}</a>
+</h3>
+<h3 class="topic">
+<a name="3mrps3bhvvm0je0tiqa2rgnem8">&nbsp;&nbsp;event_hub_error_{peer}</a>
+</h3>
+<h3 class="topic">
+<a name="0qpr305ref5qmmrfemi0hk83nl">&nbsp;&nbsp;&nbsp;the error message in case some event hub connection-related error occurs with {peer}</a>
+</h3>
+<h3 class="topic">
+<a name="10dqakcvu8cp03enicvd42t0l8">&nbsp;Workload</a>
+</h3>
+<h3 class="topic">
+<a name="23bvka1jf0ukk0ceso62afqte9">&nbsp;&nbsp;input_{i}</a>
+</h3>
+<h3 class="topic">
+<a name="0og3insdtnlugtva10937b18kk">&nbsp;&nbsp;&nbsp;The ith input of the transaction</a>
+</h3>
+<h3 class="topic">
+<a name="69su1v7948uda0c3nt40uh4koq">&nbsp;&nbsp;tx_index</a>
+</h3>
+<h3 class="topic">
+<a name="2ddj2abemhsb0dm24r22shder9">&nbsp;&nbsp;&nbsp;the index of the transaction in a single contract measurement &#13;
+(i.e., contract-level sequential transaction ID)</a>
+</h3>
+<h3 class="topic">
+<a name="7rlvcvo2a998ncttb2q0sua3l6">&nbsp;&nbsp;function_name</a>
+</h3>
+<h3 class="topic">
+<a name="1ood5s6vd85hkhevfi0d1ickm7">&nbsp;&nbsp;&nbsp;the invoked function of the Solidity contract</a>
+</h3>
+<h3 class="topic">
+<a name="29gcdjh7nun8bb7h5utrgh1l5f">&nbsp;&nbsp;load_generator_idx</a>
+</h3>
+<h3 class="topic">
+<a name="6tbkhilfhipd0rqjd5sccjip7s">&nbsp;&nbsp;&nbsp;the 0-based index of the client process that generated the TX</a>
+</h3>
+<h2 class="topic">
+<a name="0q071tu9oqhgprm8s8u00a9ast">Merged</a>
+</h2>
+<h3 class="topic">
+<a name="6p9fu13gqup5k9cenbuut5bf28">&nbsp;Faults</a>
+</h3>
+<h3 class="topic">
+<a name="57j65oc6m1m9lt6tb1dr9scjs9">&nbsp;&nbsp;odc_type_name</a>
+</h3>
+<h3 class="topic">
+<a name="65uf2o2e6m3mo3r4ur4str73uv">&nbsp;&nbsp;&nbsp;assignment, checking, interface, algorithm, or function</a>
+</h3>
+<h3 class="topic">
+<a name="18ap4ie1lfb973puagur3a12ef">&nbsp;&nbsp;odc_type_id</a>
+</h3>
+<h3 class="topic">
+<a name="6q7b7btlff70p3rbhr4mr8he63">&nbsp;&nbsp;&nbsp;numeric ID of the ODC type</a>
+</h3>
+<h3 class="topic">
+<a name="1l3hcgauvo0p40ri3s362rdfem">&nbsp;&nbsp;odc_nature_name</a>
+</h3>
+<h3 class="topic">
+<a name="2dcr2nrgnaj35mlv27sfgks0hp">&nbsp;&nbsp;&nbsp;missing, wrong or extraneous</a>
+</h3>
+<h3 class="topic">
+<a name="5ehe4sa0pj9usde9mvvrrs4evi">&nbsp;&nbsp;odc_nature_id</a>
+</h3>
+<h3 class="topic">
+<a name="2765dj83bnd9fb1lov8jpr7bad">&nbsp;&nbsp;&nbsp;numeric ID of ODC natures</a>
+</h3>
+<h3 class="topic">
+<a name="54klaloigfelv7qg3i7b3gla7k">&nbsp;&nbsp;odc_fault_name</a>
+</h3>
+<h3 class="topic">
+<a name="332uq7m93ed36ok4eavsm4gq5d">&nbsp;&nbsp;&nbsp;abbreviation of one of the 65 fault types</a>
+</h3>
+<h3 class="topic">
+<a name="707pa6p90pmverc72vqfj50sa1">&nbsp;&nbsp;odc_fault_id</a>
+</h3>
+<h3 class="topic">
+<a name="1idt6tun0rp9o8nkecb15jln8l">&nbsp;&nbsp;&nbsp;numeric ID of one of the 65 fault types</a>
+</h3>
+<h3 class="topic">
+<a name="2r88prf1oa1ei8vpl4bc2tmo16">&nbsp;&nbsp;odc_fault_variant</a>
+</h3>
+<h3 class="topic">
+<a name="5qahd8irgkg8hdjgribsb29s80">&nbsp;&nbsp;&nbsp;a variant of the corresponding fault (i.e., the injected in a different place)</a>
+</h3>
+<h3 class="topic">
+<a name="13pinsee0uquso91csbid2dnts">&nbsp;Contract Info</a>
+</h3>
+<h3 class="topic">
+<a name="3d0eciqa1b7d45sspihlj90gp3">&nbsp;&nbsp;contract_id</a>
+</h3>
+<h3 class="topic">
+<a name="6nkh7tmp4mf2pq09vene541l9b">&nbsp;&nbsp;&nbsp;the numeric ID of the contract</a>
+</h3>
+<h3 class="topic">
+<a name="2lv7ns7csij02gbnm52u191dt8">&nbsp;&nbsp;reference_contract</a>
+</h3>
+<h3 class="topic">
+<a name="490moarjs32hoheec3hs517hof">&nbsp;&nbsp;&nbsp;the ID of the non-faulty version of the contract</a>
+</h3>
+<h3 class="topic">
+<a name="65eo66noc110lfpk6jedlq4h6b">&nbsp;&nbsp;contract_name</a>
+</h3>
+<h3 class="topic">
+<a name="18sakv3e6dlooiqt5h9lsom4p9">&nbsp;&nbsp;&nbsp;the target contract of the transaction (e.g., BecToken-0-0)</a>
+</h3>
+<h3 class="topic">
+<a name="162rrppgvstmaf718h25h4s6do">&nbsp;&nbsp;contract_classname</a>
+</h3>
+<h3 class="topic">
+<a name="5ff7a1scohpvsdiumn8qe9668d">&nbsp;&nbsp;&nbsp;the name of the target Solidity contract/class in the source code (e.g., BecToken)</a>
+</h3>
+<h2 class="topic">
+<a name="5chdn9knrq76ul8i6k2ncftdb8">Derived</a>
+</h2>
+<h3 class="topic">
+<a name="4lpjq5iok1vnprfvvtbkhmmj7m">&nbsp;Durations</a>
+</h3>
+<h3 class="topic">
+<a name="3meu947uc2gisfvtl42krce4ll">&nbsp;&nbsp;duration_ms_endorse</a>
+</h3>
+<h3 class="topic">
+<a name="0fm754quliencg8gencnrfqm3e">&nbsp;&nbsp;&nbsp;client-to-client endorsing time in ms</a>
+</h3>
+<h3 class="topic">
+<a name="0lq8o5260grfcruofa84qmscce">&nbsp;&nbsp;duration_ms_total</a>
+</h3>
+<h3 class="topic">
+<a name="7bhj6t76f1n6jjs9ueds9ssshu">&nbsp;&nbsp;&nbsp;client-to-client total TX time in ms</a>
+</h3>
+<h3 class="topic">
+<a name="73ohs2nkqe5pms1fbpilj0vnj6">&nbsp;&nbsp;duration_ms_order_and_validate</a>
+</h3>
+<h3 class="topic">
+<a name="4kvj026287uf7qqi78m3388pai">&nbsp;&nbsp;&nbsp;duration_ms_total - duration_ms_endorse&#13;
+(i.e., the ordering and validation time in ms)</a>
+</h3>
+<h3 class="topic">
+<a name="64ofkdg357k41ed0nii4e8ctg0">&nbsp;Checks</a>
+</h3>
+<h3 class="topic">
+<a name="3bb0itjfueff9oflbv10g0lgds">&nbsp;&nbsp;faulty_contract</a>
+</h3>
+<h3 class="topic">
+<a name="213rb69jotc33glc7al83cc9p7">&nbsp;&nbsp;&nbsp;true if the corresponding contract has a fault injected</a>
+</h3>
+<h3 class="topic">
+<a name="35gco04e79hghnn99h9pat3ecf">&nbsp;&nbsp;matches_return_value</a>
+</h3>
+<h3 class="topic">
+<a name="0m1rbtm1k0q5377i6tab91tfsv">&nbsp;&nbsp;&nbsp;true if this TX's return value matches the return value of the corresponding transaction of the correct contract</a>
+</h3>
+<h3 class="topic">
+<a name="63bac2r52uotkdml6i8gdbn3a7">&nbsp;&nbsp;matches_read_set</a>
+</h3>
+<h3 class="topic">
+<a name="72d3v9g30cobgth5shq04qmas7">&nbsp;&nbsp;&nbsp;true if this TX's read set matches the read set of the corresponding transaction of the correct contract</a>
+</h3>
+<h3 class="topic">
+<a name="18i5ql9qubfh2mek1eg0s5dq6o">&nbsp;&nbsp;matches_write_set</a>
+</h3>
+<h3 class="topic">
+<a name="7iv9tb50pf517240m192vdu98b">&nbsp;&nbsp;&nbsp;true if this TX's write set matches the write set of the corresponding transaction of the correct contract</a>
+</h3>
+<h3 class="topic">
+<a name="17i1gie5r4sj4j8g2bqeh9n9d6">&nbsp;&nbsp;matches_status</a>
+</h3>
+<h3 class="topic">
+<a name="5vtpog7mqecpev8tegkedui2at">&nbsp;&nbsp;&nbsp;true if this TX's status matches the status of the corresponding transaction of the correct contract</a>
+</h3>
+<h3 class="topic">
+<a name="3hjqaftii6b0ssir8ivhouer62">&nbsp;&nbsp;matches_reference_tx</a>
+</h3>
+<h3 class="topic">
+<a name="2gfob9p1796tgil6po448u1j3l">&nbsp;&nbsp;&nbsp;true if this TX's every aspect matches the corresponding transaction of the correct contract (i.e., the AND relation of the other matches_* attributes)</a>
+</h3>
+</body>
+</html>

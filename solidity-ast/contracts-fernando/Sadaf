@@ -1,0 +1,24 @@
+
+****************************
+**** automatize_tools.py ***
+****************************
+
+// Script to execute the vulnerability detection tools
+// Input -> You can choose the folder as the below example "single/" . Put the contracts to be analyzed there.
+// Output -> It is fixed in the code (automatize_tools.py) to "tests" folder.
+
+
+python3 automatize_tools.py "slither" single/
+python3 automatize_tools.py "myth analyze"  single/
+
+
+
+***********************************
+*** Securify is a kind differnt ***
+***********************************
+
+cd /home/admin/contrats_to_test/securify
+source venv/bin/activate
+
+
+python3 automatize_tools.py "securify"  single/

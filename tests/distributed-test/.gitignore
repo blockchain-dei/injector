@@ -1,0 +1,21 @@
+.idea/*
+# deployment artifacts
+remote/*
+
+# contains public IPs
+caliper/genconfigs.js
+fabric/configtx.yaml
+fabric/crypto-config.yaml
+fabric/crypto-config/
+fabric/docker-compose-tls-peer0org1.yaml
+fabric/docker-compose-tls-peer0org2.yaml
+fabric/mychannel.tx
+fabric/orgs.genesis.block
+prometheus/prometheus.yaml
+
+# always regenerated configs
+caliper/network-config.yaml
+caliper/test-config.yaml
+
+# public IPs
+ec2-ip.sh

@@ -1,0 +1,1 @@
+[{"constant":false,"inputs":[{"name":"_payload","type":"bytes"},{"name":"owner","type":"address"}],"name":"forward","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_client","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]

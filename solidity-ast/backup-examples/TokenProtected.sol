@@ -1,0 +1,92 @@
+pragma solidity >=0.5.0;
+
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a * b;
+        require(a == 0 || c / a == b);
+        return c;
+    }
+
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b <= a);
+        return a - b;
+    }
+
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a);
+        return c;
+    }
+}
+
+/// @notice invariant totalSupply == __verifier_sum_uint(balances)
+contract TokenProtected {
+    using SafeMath for uint256;
+
+    uint256 public totalSupply;
+    mapping(address => uint256) balances;
+
+    /// @notice noinject
+    constructor() public {
+        totalSupply = (10**10);
+        balances[msg.sender] = totalSupply; // Give the creator all initial tokens
+    }
+
+    function balanceOf(address _owner) public view returns (uint256 balance) {
+        return balances[_owner];
+    }
+
+    /// @notice modifies balances[msg.sender] if msg.sender != _receiver
+    /// @notice modifies balances[_receiver] if msg.sender != _receiver
+    /// @notice postcondition msg.sender == _receiver || __verifier_old_uint(balances[msg.sender]) - _value == balances[msg.sender]
+    /// @notice postcondition msg.sender == _receiver || __verifier_old_uint(balances[_receiver]) == balances[_receiver] - _value
+    /// @notice postcondition msg.sender != _receiver || __verifier_old_uint(balances[msg.sender]) == balances[msg.sender]
+    /// @notice postcondition msg.sender != _receiver || __verifier_old_uint(balances[_receiver]) == balances[_receiver]
+    function transfer(address _receiver, uint256 _value) public returns (bool) {
+        require(_value > 0 && balances[msg.sender] >= _value);
+        uint256 oldSenderBalance = balances[msg.sender];
+        uint256 oldReceiverBalance = balances[_receiver];
+
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        balances[_receiver] = balances[_receiver].add(_value);
+
+        assert(msg.sender == _receiver || oldSenderBalance == balances[msg.sender].add(_value));
+        assert(msg.sender == _receiver || oldReceiverBalance == balances[_receiver].sub(_value));
+        assert(msg.sender != _receiver || oldSenderBalance == balances[msg.sender]);
+        assert(msg.sender != _receiver || oldReceiverBalance == balances[_receiver]);
+        return true;
+    }
+
+    /// @notice modifies *
+    function batchTransfer(address[] memory _receivers, uint256 _value) public returns (bool) {
+        uint cnt = _receivers.length;
+        uint256 amount = uint256(cnt).mul(_value); // Correct version
+        require(cnt > 0 && cnt <= 20);
+        require(_value > 0 && balances[msg.sender] >= amount);
+
+        uint256 oldSenderBalance = balances[msg.sender];
+        uint256[] memory oldReceiverBalances = new uint256[](cnt);
+        for (uint i = 0; i < cnt; i++) {
+            oldReceiverBalances[i] = balances[_receivers[i]];
+        }
+
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        /// @notice invariant totalSupply == __verifier_sum_uint(balances) + (cnt - i) * _value
+        /// @notice invariant i <= cnt
+        for (uint i = 0; i < cnt; i++) {
+            balances[_receivers[i]] = balances[_receivers[i]].add(_value);
+        }
+
+        // Verifier cannot prove these and might not even hold if
+        // msg.sender and receivers are not all distinct
+        assert(oldSenderBalance == balances[msg.sender].add(amount));
+        for (uint i = 0; i < cnt; i++) {
+            assert(oldReceiverBalances[i] == balances[_receivers[i]].sub(_value));
+        }
+        return true;
+    }
+}

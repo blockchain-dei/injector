@@ -1,0 +1,15 @@
+test:
+  name: Solidity fault-injection test
+  description: Invokes the defined Solidity contracts
+  clients:
+    type: local
+    number: 1
+  rounds: []
+monitor:
+  type:
+  - process
+  process:
+  - command: node
+    arguments: local-client.js
+    multiOutput: avg
+  interval: 1

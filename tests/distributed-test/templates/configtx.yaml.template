@@ -1,0 +1,60 @@
+Organizations:
+    - &OrdererOrg
+      Name: OrdererMSP
+      ID: OrdererMSP
+      MSPDir: crypto-config/ordererOrganizations/example.com/msp
+      AdminPrincipal: Role.MEMBER
+
+    - &Org0
+      Name: Org1MSP
+      ID: Org1MSP
+      MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
+      AdminPrincipal: Role.ADMIN
+      AnchorPeers:
+          - Host: <<<PEER0ORG1_IP>>>
+            Port: 7051
+
+    - &Org1
+      Name: Org2MSP
+      ID: Org2MSP
+      MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
+      AdminPrincipal: Role.ADMIN
+      AnchorPeers:
+          - Host: <<<PEER0ORG2_IP>>>
+            Port: 7051
+
+Orderer: &OrdererDefaults
+    OrdererType: solo
+    Addresses:
+        - <<<ORDERER_IP>>>:7050
+    BatchTimeout: 100ms
+    BatchSize:
+        MaxMessageCount: 1
+        AbsoluteMaxBytes: 128 MB
+        PreferredMaxBytes: 128 MB
+
+    MaxChannels: 0
+    Organizations:
+
+Application: &ApplicationDefaults
+    Organizations:
+
+
+Profiles:
+    OrgsOrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+            - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                - *Org0
+                - *Org1
+    OrgsChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+            - *Org0
+            - *Org1

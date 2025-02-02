@@ -1,0 +1,56 @@
+version: '2'
+
+services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:6.1.4
+    ports:
+    - 3000:3000
+    depends_on:
+    - influxdb
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.9.1
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - influxdb
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.7.6
+    environment:
+      # auto init
+      - INFLUXDB_DB=Fabric
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=admin
+      - INFLUXDB_USER=user
+      - INFLUXDB_USER_PASSWORD=user
+
+      # global
+      - INFLUXDB_REPORTING_DISABLED=true
+      - INFLUXDB_BIND_ADDRESS=:8088
+      # meta
+      - INFLUXDB_META_DIR=/var/lib/influxdb/meta
+      - INFLUXDB_META_RETENTION_AUTOCREATE=true
+      - INFLUXDB_META_LOGGING_ENABLED=true
+      # data
+      - INFLUXDB_DATA_DIR=/var/lib/influxdb/data
+      - INFLUXDB_DATA_WAL_DIR=/var/lib/influxdb/wal
+      - INFLUXDB_DATA_MAX_SERIES_PER_DATABASE=0
+      - INFLUXDB_DATA_MAX_VALUES_PER_TAG=0
+      # monitor
+      - INFLUXDB_MONITOR_STORE_ENABLED=false
+      # HTTP
+      - INFLUXDB_HTTP_ENABLED=true
+      - INFLUXDB_HTTP_FLUX_ENABLED=true
+      - INFLUXDB_HTTP_BIND_ADDRESS=:8086
+      # logging
+      - INFLUXDB_LOGGING_LEVEL=debug
+    command: influxd
+    ports:
+      - 8086:8086
+      - 8088:8088

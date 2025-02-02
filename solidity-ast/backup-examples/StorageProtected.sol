@@ -1,0 +1,83 @@
+pragma solidity ^0.5.0;
+
+// A simple storage example, where each user can set, update
+// or clear their data (represented as an integer) in the
+// storage. The owner can clear any data.
+contract StorageProtected {
+    struct Record {
+        int data;
+        bool set;
+    }
+
+    mapping(address=>Record) records;
+    address owner;
+
+    /// @notice noinject
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    // Only owner can change the owner
+    /// @notice modifies owner if msg.sender == __verifier_old_address(owner)
+    /// @notice postcondition owner == newOwner
+    function changeOwner(address newOwner) public returns (address) {
+        require(msg.sender == owner);
+        owner = newOwner;
+        assert(owner == newOwner);
+        return owner;
+    }
+
+    function isSet(Record storage record) internal view returns(bool) {
+        return record.set;
+    }
+
+    /// @notice postcondition r == records[at].data
+    /// @notice postcondition __verifier_old_bool(records[at].set)
+    function get(address at) public view returns (int r) {
+        require(isSet(records[at]));
+
+        assert(isSet(records[at]));
+        return records[at].data;
+    }
+
+    /// @notice modifies records[msg.sender] if !__verifier_old_bool(records[msg.sender].set)
+    /// @notice postcondition records[msg.sender].set
+    /// @notice postcondition records[msg.sender].data == data
+    function set(int data) public returns (int) {
+        require(!isSet(records[msg.sender]));
+        Record memory rec = Record(data, true);
+        records[msg.sender] = rec;
+
+        assert(isSet(records[msg.sender]));
+        assert(records[msg.sender].data == data);
+        return records[msg.sender].data;
+    }
+
+    /// @notice modifies records[msg.sender].data if __verifier_old_bool(records[msg.sender].set)
+    /// @notice postcondition records[msg.sender].data == data
+    function update(int data) public returns (int) {
+        Record storage rec = records[msg.sender];
+        require(isSet(rec));
+        rec.data = data;
+
+        assert(isSet(records[msg.sender]));
+        assert(records[msg.sender].data == data);
+        return records[msg.sender].data;
+    }
+
+    // Anyone can modify their record, but owner can modify any record
+    /// @notice modifies records[msg.sender]
+    /// @notice modifies records if msg.sender == owner
+    /// @notice postcondition !records[at].set
+    /// @notice postcondition records[at].data == 0
+    function clear(address at) public returns (int) {
+        require(msg.sender == owner || msg.sender == at);
+        Record storage rec = records[at];
+        rec.set = false;
+        rec.data = 0;
+
+        assert(!isSet(records[at]));
+        assert(records[at].data == 0);
+        return records[at].data;
+    }
+}

@@ -1,0 +1,29 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example.com
+    Specs:
+      - Hostname: orderer
+        SANS:
+          - <<<ORDERER_IP>>>
+
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    Specs:
+      - Hostname: peer0
+        SANS:
+          - <<<PEER0ORG1_IP>>>
+    Template:
+      Count: 1
+    Users:
+      Count: 3
+  - Name: Org2
+    Domain: org2.example.com
+    Specs:
+      - Hostname: peer0
+        SANS:
+          - <<<PEER0ORG2_IP>>>
+    Template:
+      Count: 1
+    Users:
+      Count: 3

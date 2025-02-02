@@ -1,0 +1,396 @@
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const csv = require('csvtojson');
+const yaml = require('js-yaml');
+
+const caliperArtifactsDir = path.join(__dirname);
+const prometheusArtifactsDir = path.join(__dirname, '..', 'prometheus');
+const contractsMetadataFile = path.join(__dirname, '..', '..', '..', 'metadata', 'contracts.csv');
+const faultsMetadataFile = path.join(__dirname, '..', '..', '..', 'metadata', 'faults.csv');
+const workloadDir = path.join(__dirname, '..', '..', 'workloads');
+
+// either a limit for the number of entries to read, or a single contract name
+let limit = process.argv[2] ? (isNaN(process.argv[2]) ?
+    process.argv[2] : parseInt(process.argv[2], 10)) : undefined;
+
+const txNum = {};
+
+let testConfig = {
+    test: {
+        name: 'Solidity fault-injection test',
+        description: 'Invokes the defined Solidity contracts',
+        clients: {
+            type: 'local',
+            number: 1
+        },
+        rounds: [ ]
+    },
+    monitor: {
+        type: [
+            'process'
+        ],
+        process: [
+            {
+                command: 'node',
+                arguments: 'local-client.js',
+                multiOutput: 'avg'
+            }
+        ],
+        interval: 1
+    }
+};
+
+let networkConfig = {
+    "name": "Fabric",
+    "version": "1.0",
+    "mutual-tls": false,
+    "caliper": {
+        "blockchain": "fabric-ccp",
+        "command": {
+            "start": "rm -rf /tmp/hfc-*",
+            "end": "rm -rf /tmp/hfc-*"
+        }
+    },
+    "info": {
+        "Version": "1.4.0",
+        "Size": "2 Orgs with 1 Peer",
+        "Orderer": "Solo",
+        "Distribution": "Distributed Hosts",
+        "StateDB": "GoLevelDB"
+    },
+    "clients": {
+        "client1.org1.example.com": {
+            "client": {
+                "organization": "Org1",
+                "credentialStore": {
+                    "path": "/tmp/hfc-kvs/org1",
+                    "cryptoStore": {
+                        "path": "/tmp/hfc-cvs/org1"
+                    }
+                },
+                "clientPrivateKey": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/key.pem"
+                },
+                "clientSignedCert": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem"
+                }
+            }
+        },
+        "client2.org1.example.com": {
+            "client": {
+                "organization": "Org1",
+                "credentialStore": {
+                    "path": "/tmp/hfc-kvs/org1",
+                    "cryptoStore": {
+                        "path": "/tmp/hfc-cvs/org1"
+                    }
+                },
+                "clientPrivateKey": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/User2@org1.example.com/msp/keystore/key.pem"
+                },
+                "clientSignedCert": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/User2@org1.example.com/msp/signcerts/User2@org1.example.com-cert.pem"
+                }
+            }
+        },
+        "client3.org1.example.com": {
+            "client": {
+                "organization": "Org1",
+                "credentialStore": {
+                    "path": "/tmp/hfc-kvs/org1",
+                    "cryptoStore": {
+                        "path": "/tmp/hfc-cvs/org1"
+                    }
+                },
+                "clientPrivateKey": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/User3@org1.example.com/msp/keystore/key.pem"
+                },
+                "clientSignedCert": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/User3@org1.example.com/msp/signcerts/User3@org1.example.com-cert.pem"
+                }
+            }
+        },
+        "client1.org2.example.com": {
+            "client": {
+                "organization": "Org2",
+                "credentialStore": {
+                    "path": "/tmp/hfc-kvs/org2",
+                    "cryptoStore": {
+                        "path": "/tmp/hfc-cvs/org2"
+                    }
+                },
+                "clientPrivateKey": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/keystore/key.pem"
+                },
+                "clientSignedCert": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/signcerts/User1@org2.example.com-cert.pem"
+                }
+            }
+        },
+        "client2.org2.example.com": {
+            "client": {
+                "organization": "Org2",
+                "credentialStore": {
+                    "path": "/tmp/hfc-kvs/org2",
+                    "cryptoStore": {
+                        "path": "/tmp/hfc-cvs/org2"
+                    }
+                },
+                "clientPrivateKey": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/User2@org2.example.com/msp/keystore/key.pem"
+                },
+                "clientSignedCert": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/User2@org2.example.com/msp/signcerts/User2@org2.example.com-cert.pem"
+                }
+            }
+        },
+        "client3.org2.example.com": {
+            "client": {
+                "organization": "Org2",
+                "credentialStore": {
+                    "path": "/tmp/hfc-kvs/org2",
+                    "cryptoStore": {
+                        "path": "/tmp/hfc-cvs/org2"
+                    }
+                },
+                "clientPrivateKey": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/User3@org2.example.com/msp/keystore/key.pem"
+                },
+                "clientSignedCert": {
+                    "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/User3@org2.example.com/msp/signcerts/User3@org2.example.com-cert.pem"
+                }
+            }
+        }
+    },
+    "channels": {
+        "mychannel": {
+            "configBinary": "../caliper-vm/mychannel.tx",
+            "created": false,
+            "orderers": [
+                "orderer.example.com"
+            ],
+            "peers": {
+                "peer0.org1.example.com": {
+                    "eventSource": true
+                },
+                "peer0.org2.example.com": {
+                    "eventSource": true
+                }
+            },
+            "evmProxyChaincode": {
+                "targetPeers": [
+                    "peer0.org1.example.com",
+                    "peer0.org2.example.com"
+                ]
+            },
+            "chaincodes": []
+        }
+    },
+    "organizations": {
+        "Org1": {
+            "mspid": "Org1MSP",
+            "peers": [
+                "peer0.org1.example.com"
+            ],
+            "adminPrivateKey": {
+                "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/key.pem"
+            },
+            "signedCert": {
+                "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+            }
+        },
+        "Org2": {
+            "mspid": "Org2MSP",
+            "peers": [
+                "peer0.org2.example.com"
+            ],
+            "adminPrivateKey": {
+                "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/key.pem"
+            },
+            "signedCert": {
+                "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
+            }
+        }
+    },
+    "orderers": {
+        "orderer.example.com": {
+            "url": "grpcs://<<<ORDERER_IP>>>:7050",
+            "grpcOptions": {
+                "ssl-target-name-override": "orderer.example.com"
+            },
+            "tlsCACerts": {
+                "path": "../caliper-vm/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
+            }
+        }
+    },
+    "peers": {
+        "peer0.org1.example.com": {
+            "url": "grpcs://<<<PEER0ORG1_IP>>>:7051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.org1.example.com",
+                "grpc.keepalive_time_ms": 600000
+            },
+            "tlsCACerts": {
+                "path": "../caliper-vm/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem"
+            }
+        },
+        "peer0.org2.example.com": {
+            "url": "grpcs://<<<PEER0ORG2_IP>>>:7051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.org2.example.com",
+                "grpc.keepalive_time_ms": 600000
+            },
+            "tlsCACerts": {
+                "path": "../caliper-vm/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem"
+            }
+        }
+    }
+};
+
+let prometheusConfig = {
+    "global": {
+        "scrape_interval": "1s",
+        "evaluation_interval": "1s",
+        "external_labels": {}
+    },
+    "remote_write": [
+        {
+            "url": "http://influxdb:8086/api/v1/prom/write?db=Fabric&u=user&p=user"
+        }
+    ],
+    "scrape_configs": [
+        {
+            "job_name": "vm_metric",
+            "static_configs": [
+                {
+                    "targets": [
+                        "<<<PEER0ORG1_IP>>>:9100"
+                    ],
+                    "labels": {
+                        "vm_id": "org1.peer0"
+                    }
+                },
+                {
+                    "targets": [
+                        "<<<PEER0ORG2_IP>>>:9100"
+                    ],
+                    "labels": {
+                        "vm_id": "org2.peer0"
+                    }
+                },
+                {
+                    "targets": [
+                        "<<<ORDERER_IP>>>:9100"
+                    ],
+                    "labels": {
+                        "vm_id": "orderer"
+                    }
+                },
+                {
+                    "targets": [
+                        "<<<CALIPER_IP>>>:9100"
+                    ],
+                    "labels": {
+                        "vm_id": "caliper"
+                    }
+                }
+            ]
+        },
+        {
+            "job_name": "service_metric",
+            "static_configs": [
+                {
+                    "targets": [
+                        "<<<PEER0ORG1_IP>>>:9000"
+                    ],
+                    "labels": {
+                        "service_id": "org1.peer0",
+                        "service_type": "peer"
+                    }
+                },
+                {
+                    "targets": [
+                        "<<<PEER0ORG2_IP>>>:9000"
+                    ],
+                    "labels": {
+                        "service_id": "org2.peer0",
+                        "service_type": "peer"
+                    }
+                },
+                {
+                    "targets": [
+                        "<<<ORDERER_IP>>>:9000"
+                    ],
+                    "labels": {
+                        "service_id": "orderer",
+                        "service_type": "orderer"
+                    }
+                }
+            ]
+        }
+    ]
+};
+
+(async () => {
+    const contracts = await csv({delimiter: ';'}).fromFile(contractsMetadataFile);
+    const faults = await csv({delimiter: ';'}).fromFile(faultsMetadataFile);
+
+    let testRounds = testConfig.test.rounds;
+    let chaincodes = networkConfig.channels.mychannel.chaincodes;
+    let externalLabels = prometheusConfig.global.external_labels;
+
+    let index = 0;
+
+    for (let c of contracts) {
+        if ((limit !== undefined) && (typeof limit === 'string'
+            ? limit !== c.contract_name // if not the required contract, skip
+            : limit <= index)) { // if above the limit, it will skip through everything
+            continue;
+        }
+
+        ++index;
+
+        let faultInfo = faults.find(e => e.odc_fault_id === c.odc_fault_id);
+
+        if (!txNum.hasOwnProperty(c.contract_classname)) {
+            let workloadFile = fs.readdirSync(workloadDir).find(f => f === `${c.contract_classname}.js`);
+
+            if (!workloadFile) {
+                throw new Error(`Couldn't find workload file ${c.contract_classname}.js`);
+            }
+
+            let workloadModule = require(path.join(workloadDir, workloadFile));
+            txNum[c.contract_classname] = workloadModule.workloadLength;
+        }
+
+        testRounds.push({
+            label: c.contract_name,
+            txNumber: [txNum[c.contract_classname]],
+            rateControl: [ {type: '../caliper-vm/loadgen.js', opts: {}}],
+            arguments: { contract: c.contract_name },
+            callback: '../caliper-vm/loadgen.js'
+        });
+
+        chaincodes.push({
+            id: c.contract_name,
+            version: 'v0',
+            language: 'solidity',
+            path: `../caliper-vm/contracts/${c.contract_name}.sol`,
+            contractName: c.contract_classname,
+            detectCompilerVersion: true,
+            deployerIdentity: 'client1.org1.example.com',
+        });
+
+        externalLabels.contract_name = c.contract_name;
+        externalLabels.contract_sol_classname = c.contract_classname;
+        externalLabels.odc_type = faultInfo.odc_type_name;
+        externalLabels.odc_nature = faultInfo.odc_nature_name;
+        externalLabels.odc_fault = faultInfo.odc_fault_name;
+    }
+
+    fs.writeFileSync(path.join(caliperArtifactsDir, 'test-config.yaml'), yaml.safeDump(testConfig, {lineWidth: 10000}), 'utf-8');
+    fs.writeFileSync(path.join(caliperArtifactsDir, 'network-config.yaml'), yaml.safeDump(networkConfig, {lineWidth: 10000}), 'utf-8');
+    fs.writeFileSync(path.join(prometheusArtifactsDir, 'prometheus.yaml'), yaml.safeDump(prometheusConfig, {lineWidth: 10000}), 'utf-8');
+})();

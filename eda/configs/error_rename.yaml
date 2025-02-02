@@ -1,0 +1,8 @@
+'failed to execute contract: error 15 - execution aborted: execution aborted': 'assert-induced abort'
+'failed to execute contract: error 4 - insufficient gas: insufficient gas': 'insufficient gas'
+'failed to execute contract: error 16 - execution reverted.*': 'require-induced revert'
+'failed to execute contract: error 2 - insufficient balance: insufficient balance': 'insufficient balance'
+'failed to execute transaction .+: error sending: timeout expired while executing transaction': 'Fabric container timeout'
+'failed to execute contract: error 29 - callee attempted to illegally modify state: attempted to modify non-existent account: .+': 'attempted to modify non-existent account'
+'failed to execute contract: error 0 - generic error: Account/contract .+ does not have permission createAccount': 'create account permission error'
+',': ' | '
